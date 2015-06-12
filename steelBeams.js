@@ -1,37 +1,3 @@
-/**
- * Created by Lucas on 2015-06-12.
- */
-//
-//      ____  _       __
-//     / __ \(_)___  / /_  __
-//    / / / / / __ \/ / / / /
-//   / /_/ / / /_/ / / /_/ /
-//  /_____/_/ .___/_/\__, /
-//         /_/      /____/
-//
-// Diply.com - Go For A dip
-// sidebarNAvCtrl.js - Sidebar Ad Scroller Version - 1.2
-// Created By - Lucas Moreira (lucasm@goviralinc.com)
-// --------------------------------------------------
-//
-// This script controls the scrolling behaviour on the vertical sidebar
-// nav. To utilize this script simply include a div with the ID of
-// #scroll-w-m within the confines of .right-sidebar.
-//
-//---------------------------------------------------
-
-//Diply.com -
-//By: Lucas Moreira
-
-
-
-
-/**
- * THIS IS PORTED FROM LIVE. ANIMATION ON AUTHOR BLOCK HAS BEEN
- * REMOVED UNTIL WE KNOW WHY ADS COLLIDE BECAUSE OF IT
- */
-
-
 $(document).ready(function() {
     //If not present, Ignore
     if ($('#scroll-w-m').offset() == null) return;
