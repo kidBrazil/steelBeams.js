@@ -1,3 +1,23 @@
+// SteelBeams.js
+// - Created By: Lucas Moreira - @BasedBrazilian
+//
+//--------------------------------------------------------------------------------------------------------
+// [ DEPENDENCIES ]
+// - Jquery - Latest is fine
+// - Flexbox Layout helps...
+//--------------------------------------------------------------------------------------------------------
+// [ PURPOSE ]
+// This script allows you to set a given div to scroll with the user once it is reached and then stop
+// scrolling once it hits a div below it. This is extremely useful on websites with sidebars where
+// you wish to display a piece of content to the user as they scroll down your page BUT you don't want
+// the div to occlude over some other piece of content such as the footer or another sidebar item competing
+// for space.
+//---------------------------------------------------------------------------------------------------------
+// [ How It works ]
+// - <div id="#scroll-with-user"> original position & dimensions is captured
+// - <div id="#stop-here"> with Id of #stop-here position & dimensions is captured
+// - as the user scrolls passed the target <div> of #scroll-with-user the <div> will become fixed and scroll down
+// -
 $(document).ready(function() {
     //If not present, Ignore
     if ($('#scroll-w-m').offset() == null) return;
@@ -46,7 +66,8 @@ $(document).ready(function() {
             if(top >= (originalPosition - topPadding )&& positionToken === false){
                 $(scrollDiv).css({
                     "position" : "fixed",
-                    "top" : topPadding + "px"
+                    "top" : topPadding + "px",
+                    "bottom" : ""
                 });
 
                 positionToken = true;
@@ -55,7 +76,7 @@ $(document).ready(function() {
             else if(scrollObject.bottom >= (stopObject.top + bottomPadding) &&  positionToken === true){
                 $(scrollDiv).css({
                     "position"  : "absolute",
-                    "top"       : "auto",
+                    "top"       : "",
                     "bottom"    : bottomPadding + "px"
                 });
                 //Parked By footer.
@@ -69,7 +90,8 @@ $(document).ready(function() {
             if(scrollObject.top >= topPadding &&  positionToken === null){
                 $(scrollDiv).css({
                     "position" : "fixed",
-                    "top" : topPadding + "px"
+                    "top" : topPadding + "px",
+                    "bottom" : ""
                 });
 
                 //Moving...
@@ -79,8 +101,8 @@ $(document).ready(function() {
             if(top < (originalPosition - 60)&& positionToken === true){
                 $(scrollDiv).css({
                     "position" : "relative",
-                    "top" : "auto",
-                    "bottom" : "auto"
+                    "top" : "",
+                    "bottom" : ""
                 });
 
                 //Not moving anymore..
