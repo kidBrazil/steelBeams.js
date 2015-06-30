@@ -1,23 +1,34 @@
-// SteelBeams.js
-// - Created By: Lucas Moreira - @BasedBrazilian
 //
-//--------------------------------------------------------------------------------------------------------
-// [ DEPENDENCIES ]
-// - Jquery - Latest is fine
-// - Flexbox Layout helps...
-//--------------------------------------------------------------------------------------------------------
-// [ PURPOSE ]
-// This script allows you to set a given div to scroll with the user once it is reached and then stop
-// scrolling once it hits a div below it. This is extremely useful on websites with sidebars where
-// you wish to display a piece of content to the user as they scroll down your page BUT you don't want
-// the div to occlude over some other piece of content such as the footer or another sidebar item competing
-// for space.
-//---------------------------------------------------------------------------------------------------------
-// [ How It works ]
-// - <div id="#scroll-with-user"> original position & dimensions is captured
-// - <div id="#stop-here"> with Id of #stop-here position & dimensions is captured
-// - as the user scrolls passed the target <div> of #scroll-with-user the <div> will become fixed and scroll down
-// -
+//      ____  _       __
+//     / __ \(_)___  / /_  __
+//    / / / / / __ \/ / / / /
+//   / /_/ / / /_/ / / /_/ /
+//  /_____/_/ .___/_/\__, /
+//         /_/      /____/
+//
+// Diply.com - Go For A dip
+// sidebarNAvCtrl.js - Sidebar Ad Scroller Version - 1.2
+// Created By - Lucas Moreira (lucasm@goviralinc.com)
+// --------------------------------------------------
+//
+// This script controls the scrolling behaviour on the vertical sidebar
+// nav. To utilize this script simply include a div with the ID of
+// #scroll-w-m within the confines of .right-sidebar.
+//
+//---------------------------------------------------
+
+//Diply.com -
+//By: Lucas Moreira
+
+
+
+
+/**
+ * THIS IS PORTED FROM LIVE. ANIMATION ON AUTHOR BLOCK HAS BEEN
+ * REMOVED UNTIL WE KNOW WHY ADS COLLIDE BECAUSE OF IT
+ */
+
+
 $(document).ready(function() {
     //If not present, Ignore
     if ($('#scroll-w-m').offset() == null) return;
@@ -38,6 +49,108 @@ $(document).ready(function() {
     //Configuration of Spacing
     var topPadding      = 120,
         bottomPadding   = 30;
+
+    //Keyboard [ Home || End ] - Catch Case --------------------------------------- [ START ]
+    $(document).keydown(function(e) {
+        // Variables --------------------------------------------------------------
+
+        var key             = null,
+            body            = document.body,
+            html            = document.documentElement,
+        //Ratio determines speed of scroll Smaller numbers are faster. Don't go under 0.1
+            ratio           =   0.1,
+            duration        = null,
+            startTimer      = null,
+            startPosition   = (document.documentElement.scrollTop || body.scrollTop),
+            bottomPosition  = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+        // Utilities --------------------------------------------------------------
+
+        // Thanks Mr Penner - http://robertpenner.com/easing/
+        // Ease In-Out Function..
+        function easeInOutQuad( t, b, c, d ) {
+            t /= d / 2;
+            if ( t < 1 ) return c / 2 * t * t + b;
+            t--;
+            return -c / 2 * ( t * ( t -2 ) - 1 ) + b;
+        }
+        // Animations -------------------------------------------------------------
+        function escalatorLoop( timeStamp ) { //Time is passed by the RequestAnimationFrame
+            //Set Timer...
+            if ( !startTimer ) {
+                startTimer = timeStamp;
+            }
+
+            // calculate Elapsed Time.
+            var timeElapsed = timeStamp - startTimer,
+            // Ease the numbers with the Above function.
+                easedAnimation = easeInOutQuad(timeElapsed, startPosition, bottomPosition, duration);
+
+            //Force scroll the window to this position...
+            window.scrollTo(0, easedAnimation);
+
+            //is the animation still running?
+            if( timeElapsed < duration ) {
+                animation = requestAnimationFrame(escalatorLoop);
+            }
+
+            //After Animation Reset all things...
+            else {
+                startTimer = null;
+                startPosition = null;
+            }
+        };
+
+        // Functions ---------------------------------------------------------------
+
+        var escalator = {
+
+            //Responds to - Home Key
+            goingUp: function () {
+                startPosition   = (document.documentElement.scrollTop || body.scrollTop);
+                duration = startPosition * ratio;
+                bottomPosition = -startPosition;
+                requestAnimationFrame( escalatorLoop );
+            },
+            //responds to End Key
+            goingDown: function () {
+                startPosition   = (document.documentElement.scrollTop || body.scrollTop);
+                duration = ((bottomPosition - startPosition) * ratio);
+                requestAnimationFrame( escalatorLoop );
+            }//Going Down
+
+        };
+        //Escalator Function - End
+
+
+        // Checks -----------------------------------------------------------------
+        //Simple Check for IE...
+        if(window.event){
+            key = e.keyCode;
+        }
+        //Simple Check for Moz/Opera/Chrome...
+        else if(e.which){
+            key = e.which;
+        }
+
+        // Key Detection -----------------------------------------------------------
+        //Home Key...
+        if (key == 36){
+            //prevent default scroll..
+            e.preventDefault();
+            //Call escalator..
+            escalator.goingUp();
+        }
+        //End Key Pressed...
+        else if (key == 35){
+            //prevent default scroll..
+            e.preventDefault();
+            //Call escalator..
+            escalator.goingDown();
+        }
+
+    });
+    //Keyboard [ Home || End ] - Catch Case --------------------------------------- [ END ]
 
 
     //Scroll function.. where the magic happens.
@@ -111,5 +224,9 @@ $(document).ready(function() {
         }//IF USER SCROLLING UP...
 
     });// Scroll Function End - DESKTOP VERSION
+
+
 });
+
+
 
