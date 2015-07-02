@@ -39,6 +39,8 @@ $(document).ready(function() {
         sidebarDiv          = document.getElementsByClassName("right-sidebar")[0],
     //Token marks wether the div is moving. False = not moving | True = moving with scroll | Null = Parked.
         positionToken       = false,
+    // Used to flag wether or not the animation is running on the Home/End Keys
+        running             = false,
     // Token marks wether the user is scrolling up or down.
         directionToken      = null,
     //Stores the scroll top value so it can be compared against the new one and determine direction.
@@ -46,19 +48,18 @@ $(document).ready(function() {
     //Original starting position for the scroll div.
         originalPosition    = scrollDiv.getBoundingClientRect().top;
 
-    //Configuration of Spacing
+    //Configuration of Spacing--------------------------------------------------------------
     var topPadding      = 120,
         bottomPadding   = 30;
 
     //Keyboard [ Home || End ] - Catch Case --------------------------------------- [ START ]
     $(document).keydown(function(e) {
         // Variables --------------------------------------------------------------
-
         var key             = null,
             body            = document.body,
             html            = document.documentElement,
         //Ratio determines speed of scroll Smaller numbers are faster. Don't go under 0.1
-            ratio           =   0.1,
+            ratio           = 0.1,
             duration        = null,
             startTimer      = null,
             startPosition   = (document.documentElement.scrollTop || body.scrollTop),
@@ -74,7 +75,9 @@ $(document).ready(function() {
             t--;
             return -c / 2 * ( t * ( t -2 ) - 1 ) + b;
         }
-        // Animations -------------------------------------------------------------
+
+        // Animations Loop -------------------------------------------------------------
+        // Some Code borrowed from Elevator.js - https://github.com/tholman/elevator.js
         function escalatorLoop( timeStamp ) { //Time is passed by the RequestAnimationFrame
             //Set Timer...
             if ( !startTimer ) {
@@ -96,17 +99,21 @@ $(document).ready(function() {
 
             //After Animation Reset all things...
             else {
-                startTimer = null;
-                startPosition = null;
+                startTimer      = null;
+                startPosition   = null;
+                running         = false;
             }
-        };
+        }
 
         // Functions ---------------------------------------------------------------
-
         var escalator = {
 
             //Responds to - Home Key
             goingUp: function () {
+
+                if(running) {
+                    return;
+                }
                 startPosition   = (document.documentElement.scrollTop || body.scrollTop);
                 duration = startPosition * ratio;
                 bottomPosition = -startPosition;
@@ -114,6 +121,10 @@ $(document).ready(function() {
             },
             //responds to End Key
             goingDown: function () {
+
+                if(running) {
+                    return;
+                }
                 startPosition   = (document.documentElement.scrollTop || body.scrollTop);
                 duration = ((bottomPosition - startPosition) * ratio);
                 requestAnimationFrame( escalatorLoop );
@@ -140,6 +151,7 @@ $(document).ready(function() {
             e.preventDefault();
             //Call escalator..
             escalator.goingUp();
+            running = true;
         }
         //End Key Pressed...
         else if (key == 35){
@@ -147,6 +159,7 @@ $(document).ready(function() {
             e.preventDefault();
             //Call escalator..
             escalator.goingDown();
+            running = true;
         }
 
     });
@@ -224,8 +237,6 @@ $(document).ready(function() {
         }//IF USER SCROLLING UP...
 
     });// Scroll Function End - DESKTOP VERSION
-
-
 });
 
 
