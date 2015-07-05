@@ -34,6 +34,8 @@ $(document).ready(function() {
         running             = false,
     //If True - Enables Keyboard [Home/End] Key smoothing - Overrides default browser behavior.
         keyboardSmoothing   = true,
+    //Do not touch this flag...
+        killScrollFn        = false,
     // Token marks wether the user is scrolling up or down.
         directionToken      = null;
 
@@ -44,13 +46,18 @@ $(document).ready(function() {
         originalPosition    = scrollDiv.getBoundingClientRect().top;
 
     //Configuration of Spacing---------------
-    var topPadding      = 120,
-        bottomPadding   = 30;
+    var topPadding      = 20,
+        bottomPadding   = 20;
 
     //Keyboard [ Home/End ] ---------------------------------------------- [ START ]
     $(document).keydown(function(e) {
-        //Enabled or Disabled?
-        if(!keyboardSmoothing){ return; }
+        //Keyboard Smoothing Enabled or Disabled?
+        if(!keyboardSmoothing){
+            if(!killScrollFn){
+                killScrollFn = true;
+            }
+            return;
+        }
 
         // Variables ------------------------------
         var key             = null,
@@ -164,6 +171,20 @@ $(document).ready(function() {
     //Scroll function.. where the magic happens.
     $(document).scroll(function (event) {
 
+        //Kill Scroll Function due to Home/End?
+        if (killScrollFn){
+            //Flip the safety back..
+            killScrollFn = false;
+            //Lock the div back in place
+            $(scrollDiv).css({
+                "position" : "relative",
+                "top" : "",
+                "bottom" : "",
+                "width" : ""
+            });
+            return;
+        }
+
         var top             = $(window).scrollTop(),
         //Objects w/ client rect.
             scrollObject    = scrollDiv.getBoundingClientRect(),
@@ -179,7 +200,6 @@ $(document).ready(function() {
             oldTop = top;
             directionToken = false;
         }//Than we must be moving up!
-
 
         //User Is Scrolling Down --------------------------------------------------------------------------
         if(directionToken === true){
