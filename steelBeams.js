@@ -1,72 +1,69 @@
-//
-//      ____  _       __
-//     / __ \(_)___  / /_  __
-//    / / / / / __ \/ / / / /
-//   / /_/ / / /_/ / / /_/ /
-//  /_____/_/ .___/_/\__, /
-//         /_/      /____/
-//
-// Diply.com - Go For A dip
-// sidebarNAvCtrl.js - Sidebar Ad Scroller Version - 1.2
+
 // Created By - Lucas Moreira (lucasm@goviralinc.com)
 // --------------------------------------------------
+// [Purpose]
+// This is a handy little script to create a sidebar that
+// will scroll with the user and come to a rest at a pre-determined
+// spot. Usually the footer. This script was designed to work with [FlexBox].
 //
-// This script controls the scrolling behaviour on the vertical sidebar
-// nav. To utilize this script simply include a div with the ID of
-// #scroll-w-m within the confines of .right-sidebar.
+// [Overview]
+// The script works by collecting boundingRct properties on the sidebar,
+// the footer [STOP], and the div we want to scroll to determine the ammount
+// of pixels it can travel. The script contains catches for
+// Keyboard [Home/End], scroll direction and easing for the animations.
 //
+// [Requirements]
+// -Jquery for some faster dom manipulation.
+// -Flexbox based layout.
 //---------------------------------------------------
-
-//Diply.com -
-//By: Lucas Moreira
-
-
-
-
-/**
- * THIS IS PORTED FROM LIVE. ANIMATION ON AUTHOR BLOCK HAS BEEN
- * REMOVED UNTIL WE KNOW WHY ADS COLLIDE BECAUSE OF IT
- */
 
 
 $(document).ready(function() {
     //If not present, Ignore
-    if ($('#scroll-w-m').offset() == null) return;
+    if ($('#scroll-me').offset() == null) return;
 
-    //Global Variables
-    var scrollDiv           = document.getElementById("scroll-w-m"),
+    // Elements-------------------------------
+    var scrollDiv           = document.getElementById("scroll-me"),
         stopDiv             = document.getElementById("footer-stop"),
-        sidebarDiv          = document.getElementsByClassName("right-sidebar")[0],
+        sidebarDiv          = document.getElementsByClassName("sidebar")[0];
+
+    // Tokens/Flags --------------------------
     //Token marks wether the div is moving. False = not moving | True = moving with scroll | Null = Parked.
-        positionToken       = false,
+    var positionToken       = false,
     // Used to flag wether or not the animation is running on the Home/End Keys
         running             = false,
+    //If True - Enables Keyboard [Home/End] Key smoothing - Overrides default browser behavior.
+        keyboardSmoothing   = true,
     // Token marks wether the user is scrolling up or down.
-        directionToken      = null,
+        directionToken      = null;
+
+    //Data Storage ---------------------------
     //Stores the scroll top value so it can be compared against the new one and determine direction.
-        oldTop              = 0,
+    var oldTop              = 0,
     //Original starting position for the scroll div.
         originalPosition    = scrollDiv.getBoundingClientRect().top;
 
-    //Configuration of Spacing--------------------------------------------------------------
+    //Configuration of Spacing---------------
     var topPadding      = 120,
         bottomPadding   = 30;
 
-    //Keyboard [ Home || End ] - Catch Case --------------------------------------- [ START ]
+    //Keyboard [ Home/End ] ---------------------------------------------- [ START ]
     $(document).keydown(function(e) {
-        // Variables --------------------------------------------------------------
+        //Enabled or Disabled?
+        if(!keyboardSmoothing){ return; }
+
+        // Variables ------------------------------
         var key             = null,
             body            = document.body,
             html            = document.documentElement,
         //Ratio determines speed of scroll Smaller numbers are faster. Don't go under 0.1
-            ratio           = 0.1,
+            ratio           = 0.3,
             duration        = null,
             startTimer      = null,
             startPosition   = (document.documentElement.scrollTop || body.scrollTop),
             bottomPosition  = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
         // Utilities --------------------------------------------------------------
-
         // Thanks Mr Penner - http://robertpenner.com/easing/
         // Ease In-Out Function..
         function easeInOutQuad( t, b, c, d ) {
@@ -76,8 +73,9 @@ $(document).ready(function() {
             return -c / 2 * ( t * ( t -2 ) - 1 ) + b;
         }
 
-        // Animations Loop -------------------------------------------------------------
-        // Some Code borrowed from Elevator.js - https://github.com/tholman/elevator.js
+        // Animations Loop --------------------------------------------------------
+        // Code borrowed from Elevator.js - https://github.com/tholman/elevator.js
+        // and edited for my purposes.
         function escalatorLoop( timeStamp ) { //Time is passed by the RequestAnimationFrame
             //Set Timer...
             if ( !startTimer ) {
@@ -96,7 +94,6 @@ $(document).ready(function() {
             if( timeElapsed < duration ) {
                 animation = requestAnimationFrame(escalatorLoop);
             }
-
             //After Animation Reset all things...
             else {
                 startTimer      = null;
@@ -107,32 +104,27 @@ $(document).ready(function() {
 
         // Functions ---------------------------------------------------------------
         var escalator = {
-
             //Responds to - Home Key
-            goingUp: function () {
-
-                if(running) {
+            goingUp:function(){
+                if(running){
                     return;
                 }
                 startPosition   = (document.documentElement.scrollTop || body.scrollTop);
-                duration = startPosition * ratio;
-                bottomPosition = -startPosition;
+                duration        = startPosition * ratio;
+                bottomPosition  = -startPosition;
                 requestAnimationFrame( escalatorLoop );
             },
-            //responds to End Key
-            goingDown: function () {
-
-                if(running) {
+            //responds to - End Key
+            goingDown:function(){
+                if(running){
                     return;
                 }
                 startPosition   = (document.documentElement.scrollTop || body.scrollTop);
-                duration = ((bottomPosition - startPosition) * ratio);
+                duration        = ((bottomPosition - startPosition) * ratio);
                 requestAnimationFrame( escalatorLoop );
             }//Going Down
-
         };
         //Escalator Function - End
-
 
         // Checks -----------------------------------------------------------------
         //Simple Check for IE...
@@ -160,6 +152,9 @@ $(document).ready(function() {
             //Call escalator..
             escalator.goingDown();
             running = true;
+        }
+        else{
+            return;
         }
 
     });
@@ -193,7 +188,8 @@ $(document).ready(function() {
                 $(scrollDiv).css({
                     "position" : "fixed",
                     "top" : topPadding + "px",
-                    "bottom" : ""
+                    "bottom" : "",
+                    "width" : sidebarObject.width +"px"
                 });
 
                 positionToken = true;
@@ -203,7 +199,8 @@ $(document).ready(function() {
                 $(scrollDiv).css({
                     "position"  : "absolute",
                     "top"       : "",
-                    "bottom"    : bottomPadding + "px"
+                    "bottom"    : bottomPadding + "px",
+                    "width" : sidebarObject.width +"px"
                 });
                 //Parked By footer.
                 positionToken = null;
@@ -217,7 +214,8 @@ $(document).ready(function() {
                 $(scrollDiv).css({
                     "position" : "fixed",
                     "top" : topPadding + "px",
-                    "bottom" : ""
+                    "bottom" : "",
+                    "width" : sidebarObject.width +"px"
                 });
 
                 //Moving...
@@ -228,7 +226,8 @@ $(document).ready(function() {
                 $(scrollDiv).css({
                     "position" : "relative",
                     "top" : "",
-                    "bottom" : ""
+                    "bottom" : "",
+                    "width" : ""
                 });
 
                 //Not moving anymore..

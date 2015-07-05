@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>SteelBeams.js - Demo Website - Lucas Moreira</title>
+    <style>
+        body{margin:0; padding:0; background:#f0f0f0;}
+        html{margin:0; padding:0; font-family:sans-serif;}
+        .navigation{
+            position:relative;
+            width:100%;
+            background:#272727;
+            color:#fafafa;
+            text-align:center;
+            overflow:hidden;
+        }
+        .wrapper{
+            position:relative;
+            width:80%;
+            margin:0 auto;
+            min-width:300px;
+            max-width:1200px;
+            /* IMPORTANT FLEX */
+            display:flex;
+            flex-wrap:nowrap;
+            align-content:flex-start;
+            align-items:stretch;
+        }
+        .content{
+            position:relative;
+            width:70%;
+            background:black;
+            height:2000px;
+        }
+        .sidebar{
+            position:relative;
+            width:30%;
+            background:blue;
+        }
+        .someContent {
+            position:relative;
+            width:100%;
+            height:200px;
+            background:pink;
+        }
+        .scrollsidebar{
+            position:relative;
+            margin:5px 0;
+            width:100%;
+            height:200px;
+            background:green;
+        }
+        .footer{
+            width:100%;
+            height:800px;
+            background:#272727;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="steelBeams.js"></script>
+</head>
+<body>
+<div class="navigation">
+    <h2>Navigation</h2>
+</div>
+<div class="wrapper">
+    <div class="content">
+
+    </div>
+    <div class="sidebar">
+        <div class="someContent">
+
+        </div>
+        <div id="scroll-me" class="scrollsidebar">
+
+        </div>
+    </div>
+</div>
+<div id="footer-stop" class="footer">
+    <div class="wrapper">
+
+    </div>
+</div>
+
+</body>
+</html>
