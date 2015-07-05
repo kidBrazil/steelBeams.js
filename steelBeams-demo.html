@@ -4,15 +4,22 @@
     <meta charset="UTF-8">
     <title>SteelBeams.js - Demo Website - Lucas Moreira</title>
     <style>
-        body{margin:0; padding:0; background:#f0f0f0;}
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+        body{margin:80px 0 0 0; padding:0; background:#f0f0f0;}
         html{margin:0; padding:0; font-family:sans-serif;}
         .navigation{
-            position:relative;
+            position:fixed;
+            top:0;
+            z-index:999;
             width:100%;
             background:#272727;
             color:#fafafa;
             text-align:center;
             overflow:hidden;
+            height:80px;
+
         }
         .wrapper{
             position:relative;
@@ -29,26 +36,37 @@
         .content{
             position:relative;
             width:70%;
-            background:black;
+            background: rgb(226, 226, 226);
             height:2000px;
         }
         .sidebar{
             position:relative;
             width:30%;
-            background:blue;
+            background:rgb(197, 197, 197);
         }
         .someContent {
             position:relative;
             width:100%;
             height:200px;
-            background:pink;
+            background:rgb(249, 130, 87);
+            background-size:cover;
+            color:white;
+            overflow:hidden;
+            padding:20px;
         }
         .scrollsidebar{
             position:relative;
-            margin:5px 0;
+            overflow:hidden;
+            color:white;
+            text-align:center;
             width:100%;
-            height:200px;
-            background:green;
+            height:380px;
+            background:rgb(189, 85, 47);
+
+        }
+        .scrollsidebar h2{
+            position:relative;
+            top:50%;
         }
         .footer{
             width:100%;
@@ -73,7 +91,7 @@
 
         </div>
         <div id="scroll-me" class="scrollsidebar">
-
+            <h2>Scrolling Content</h2>
         </div>
     </div>
 </div>

@@ -46,8 +46,8 @@ $(document).ready(function() {
         originalPosition    = scrollDiv.getBoundingClientRect().top;
 
     //Configuration of Spacing---------------
-    var topPadding      = 20,
-        bottomPadding   = 20;
+    var topPadding      = 80,
+        bottomPadding   = 40;
 
     //Keyboard [ Home/End ] ---------------------------------------------- [ START ]
     $(document).keydown(function(e) {
